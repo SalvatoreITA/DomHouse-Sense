@@ -1,0 +1,82 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "DomHouse Sense",
+        "menu_options": {
+          "push": "Send my sensors to the network",
+          "follow": "Follow nearby stations (show them in HA)"
+        }
+      },
+      "push": {
+        "title": "DomHouse Sense · Send",
+        "description": "Enter the server address and key, then choose which sensors to send.",
+        "data": {
+          "server_url": "Server address",
+          "api_key": "API key",
+          "station_name": "Station name (shown on the map)",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "quake_entity": "Earthquake sensor (binary_sensor)",
+          "pga_entity": "PGA sensor (g, optional)",
+          "temperature_entity": "Temperature",
+          "humidity_entity": "Humidity",
+          "rain_entity": "Rain",
+          "pressure_entity": "Pressure",
+          "wind_entity": "Wind speed",
+          "wind_dir_entity": "Wind direction (°)",
+          "pm25_entity": "PM 2.5",
+          "pm10_entity": "PM 10",
+          "interval": "Weather send interval (seconds)"
+        }
+      },
+      "follow": {
+        "title": "DomHouse Sense · Follow",
+        "description": "Server address to read the stations from.",
+        "data": {
+          "server_url": "Server address",
+          "poll": "Update interval (seconds)"
+        }
+      },
+      "pick": {
+        "title": "Choose stations",
+        "description": "Select the nearby stations to show in your Home Assistant.",
+        "data": {
+          "stations": "Stations to follow"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Server unreachable",
+      "no_stations": "No stations found on the server"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "DomHouse Sense",
+        "description": "Edit the DomHouse Sense configuration.",
+        "data": {
+          "server_url": "Server address",
+          "api_key": "API key",
+          "station_name": "Station name (shown on the map)",
+          "latitude": "Latitude",
+          "longitude": "Longitude",
+          "quake_entity": "Earthquake sensor (binary_sensor)",
+          "pga_entity": "PGA sensor (g, optional)",
+          "temperature_entity": "Temperature",
+          "humidity_entity": "Humidity",
+          "rain_entity": "Rain",
+          "pressure_entity": "Pressure",
+          "wind_entity": "Wind speed",
+          "wind_dir_entity": "Wind direction (°)",
+          "pm25_entity": "PM 2.5",
+          "pm10_entity": "PM 10",
+          "interval": "Weather send interval (seconds)",
+          "poll": "Update interval (seconds)",
+          "stations": "Stations to follow"
+        }
+      }
+    }
+  }
+}

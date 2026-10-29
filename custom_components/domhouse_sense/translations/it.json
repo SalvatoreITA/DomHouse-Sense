@@ -1,0 +1,82 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "DomHouse Sense",
+        "menu_options": {
+          "push": "Invia i miei sensori alla rete",
+          "follow": "Segui stazioni vicine (le vedi in HA)"
+        }
+      },
+      "push": {
+        "title": "DomHouse Sense · Invia",
+        "description": "Inserisci l'indirizzo del server e la chiave, poi scegli quali sensori inviare.",
+        "data": {
+          "server_url": "Indirizzo server",
+          "api_key": "Chiave API",
+          "station_name": "Nome stazione (come appare sulla mappa)",
+          "latitude": "Latitudine",
+          "longitude": "Longitudine",
+          "quake_entity": "Sensore terremoto (binary_sensor)",
+          "pga_entity": "Sensore PGA (g, opzionale)",
+          "temperature_entity": "Temperatura",
+          "humidity_entity": "Umidità",
+          "rain_entity": "Pioggia",
+          "pressure_entity": "Pressione",
+          "wind_entity": "Velocità vento",
+          "wind_dir_entity": "Direzione vento (°)",
+          "pm25_entity": "PM 2.5",
+          "pm10_entity": "PM 10",
+          "interval": "Intervallo invio meteo (secondi)"
+        }
+      },
+      "follow": {
+        "title": "DomHouse Sense · Segui",
+        "description": "Indirizzo del server da cui leggere le stazioni.",
+        "data": {
+          "server_url": "Indirizzo server",
+          "poll": "Intervallo di aggiornamento (secondi)"
+        }
+      },
+      "pick": {
+        "title": "Scegli le stazioni",
+        "description": "Seleziona le stazioni vicine da mostrare nella tua Home Assistant.",
+        "data": {
+          "stations": "Stazioni da seguire"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Server non raggiungibile",
+      "no_stations": "Nessuna stazione trovata sul server"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "DomHouse Sense",
+        "description": "Modifica la configurazione DomHouse Sense.",
+        "data": {
+          "server_url": "Indirizzo server",
+          "api_key": "Chiave API",
+          "station_name": "Nome stazione (come appare sulla mappa)",
+          "latitude": "Latitudine",
+          "longitude": "Longitudine",
+          "quake_entity": "Sensore terremoto (binary_sensor)",
+          "pga_entity": "Sensore PGA (g, opzionale)",
+          "temperature_entity": "Temperatura",
+          "humidity_entity": "Umidità",
+          "rain_entity": "Pioggia",
+          "pressure_entity": "Pressione",
+          "wind_entity": "Velocità vento",
+          "wind_dir_entity": "Direzione vento (°)",
+          "pm25_entity": "PM 2.5",
+          "pm10_entity": "PM 10",
+          "interval": "Intervallo invio meteo (secondi)",
+          "poll": "Intervallo di aggiornamento (secondi)",
+          "stations": "Stazioni da seguire"
+        }
+      }
+    }
+  }
+}
