@@ -1,14 +1,45 @@
 ## ♻️ Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)
 
-Ideale se possiedi già un sismometro costruito per il progetto **SeismoCloud** (basato su ESP8266/NodeMCU + MPU6050) e vuoi riutilizzarlo su **DomHouse Sense** senza modificare i collegamenti.
+Ideale se possiedi già un sismometro costruito per il progetto **[Seismo Cloud](https://www.seismocloud.com/it/)** (basato su ESP8266/NodeMCU + MPU6050) e vuoi riutilizzarlo su **DomHouse Sense** senza modificare i collegamenti.
 
 1. **Verifica il cablaggio:** L'hardware utilizzato da SeismoCloud (ESP8266 + MPU6050 su bus I2C `SDA=D1` / `SCL=D2`) è già compatibile; non serve dissaldare o spostare i cavi (ignora eventuali LED o buzzer aggiuntivi se presenti).
 
-2. Scarica il Firmware: ["DomHouse-Sense-HA.bin"](https://github.com/SalvatoreITA/DomHouse-Sense/releases/)
+2. Scarica il Firmware: ["DomHouse-Sense-Migration.bin"](https://github.com/SalvatoreITA/DomHouse-Sense/releases/)
 
-2. **Flash del nuovo firmware:** Collega il dispositivo via USB al PC e flasha il file `.bin` precompilato di DomSense (versione **Standalone** oppure versione **Home Assistant** se preferisci integrarlo in HA) tramite [ESPHome Web](https://web.esphome.io/).
+2. **Flash del nuovo firmware:** Collega il dispositivo via USB al PC e flasha il file `.bin` precompilato di DomHouse Sense versione **Migration** tramite [ESPHome Web](https://web.esphome.io/).
 
-3. **Configurazione:** Collega il sensore al Wi-Fi, apri il suo indirizzo IP nel browser e inserisci la tua **Chiave API**, il nome generico del nodo e le coordinate di un punto pubblico vicino a te (`lat` / `lon`).
+3. Collegati in Wifi all'AP generato dal sismometro **DomHouseSense-Setup**
+
+4. Dal Browser digita 192.168.4.1 si aprirà una pagina dove inserire le tue credenziali WiFi 
+
+5. Apri nel browser l'indirizzo IP locale del sensore: si aprirà una comoda **pagina web di configurazione** dove potrai inserire la tua **Chiave API**, un **nome generico della stazione** (es. *"Nodo Roma Nord"*, evitando nomi e cognomi reali) e le **coordinate di un punto pubblico vicino a te (`lat` / `lon`)**.
+
+#### 💡 Significato dei LED
+
+| 🟢 Verde | 🟡 Giallo | 🔴 Rosso | Stato |
+| :---: | :---: | :---: | :--- |
+| **ON** | — | — | Inattivo e in ascolto (connesso al server) |
+| **ON** | **ON** | — | Connessione al server persa, sta riprovando |
+| **ON** | — | **ON** | **Vibrazione / terremoto rilevato** |
+| **ON** | **ON** | **ON** | Si sta collegando alla rete DomHouse Sense (chiave mancante o server non ancora raggiunto) |
+| — | **ON** | — | Connessione al WiFi |
+| — | — | **ON** | Calibrazione in corso (tienilo fermo 10 s) |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 🛠️ Come costruire il Sismometro (Per le Opzioni B, C e D)
 
