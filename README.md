@@ -26,10 +26,12 @@ Prima di iniziare, richiedi la tua **Chiave API (`api_key`)** personale accettan
 
 Puoi unirti a DomHouse Sense scegliendo una delle seguenti configurazioni (clicca per andare direttamente alla guida):
 
-- [🌤️ Opzione A: Solo Meteo & Sensori con Home Assistant (Zero Hardware da costruire)](#️-opzione-a-solo-meteo--sensori-con-home-assistant-zero-hardware-da-costruire)
-- [🌋 Opzione B: Sismometro + Home Assistant (Consigliata per utenti HA)](#-opzione-b-sismometro--home-assistant-consigliata-per-utenti-ha)
-- [📡 Opzione C: Sismometro Standalone (Senza Home Assistant)](#-opzione-c-sismometro-standalone-senza-home-assistant)
-- [♻️ Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)](#-opzione-d-sismometro-standalone-migrazione-da-progetto-seismocloud)
+🛠️ Come costruire il Sismometro (Per le Opzioni B e C)
+- [🛠️ Come costruire il Sismometro (Per le Opzioni B e C)](https://github.com/SalvatoreITA/DomHouse-Sense/blob/main/Realizzazione.md)
+- [🌤️ Opzione A: Solo Meteo & Sensori con Home Assistant (Zero Hardware da costruire)](https://github.com/SalvatoreITA/DomHouse-Sense/blob/main/Opzione%20A.md)
+- [🌋 Opzione B: Sismometro + Home Assistant (Consigliata per utenti HA)](https://github.com/SalvatoreITA/DomHouse-Sense/blob/main/Opzione%20B.md)
+- [📡 Opzione C: Sismometro Standalone (Senza Home Assistant)](https://github.com/SalvatoreITA/DomHouse-Sense/blob/main/Opzione%20C.md)
+- [♻️ Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)](https://github.com/SalvatoreITA/DomHouse-Sense/blob/main/Opzione%20D.md)
 
 ## 🔍 Trasparenza e Codice Sorgente
 
