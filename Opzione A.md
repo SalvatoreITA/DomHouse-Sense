@@ -15,7 +15,9 @@ Ideale se non vuoi assemblare il sismometro ma hai già dei sensori ambientali o
 1. Copia la cartella `custom_components/domsense/` dentro `config/custom_components/`.
 2. Riavvia Home Assistant.
 
-## ⚙️ Opzione A Configurazione ( Condividi Sensori )
+## ⚙️ Configurazione
+
+### Opzione A — Condividi Sensori
 
 **Impostazioni → Dispositivi e servizi → Aggiungi integrazione → "Domsense Cloud"**
 
@@ -23,7 +25,7 @@ Ideale se non vuoi assemblare il sismometro ma hai già dei sensori ambientali o
 2. Inserisci la tua **Chiave API** , nome della stazione meteo e le coordinate approssimative del tuo quartiere (vedi nota sopra).
 3. Seleziona quali entità meteo condividere sulla mappa (es. temperatura, umidità, pioggia).
 
-## ⚙️ Opzione B Configurazione ( Utilizza Sensori Vicino a tè )
+### Opzione B — Utilizza sensori vicino a tè
 
 **Impostazioni → Dispositivi e servizi → Aggiungi integrazione → "Domsense Cloud"**
 
