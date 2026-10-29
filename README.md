@@ -8,4 +8,4 @@ Ideale se usi **Home Assistant** e vuoi sia costruire il sismometro, e condivide
 
 3. Tramite l'add-on **DomSense** su Home Assistant, inserisci la tua **Chiave API**, inserisci i sensori del sismometro ed invia alla rete sia gli eventi del sismometro sia i tuoi sensori meteo.
 
-4. Scarica il Firmware: **["DomHouse-Sense-HA.bin"](https://github.com/SalvatoreITA/DomHouse-Sense/releases/)**
+4. Scarica il Firmware: ["DomHouse-Sense-HA.bin"](https://github.com/SalvatoreITA/DomHouse-Sense/releases/)
