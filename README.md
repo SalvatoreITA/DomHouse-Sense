@@ -29,7 +29,7 @@ Prima di iniziare, richiedi la tua **Chiave API (`api_key`)** personale accettan
 
 * 📡 Opzione C: Sismometro Standalone (Senza Home Assistant)
 
-* 📡 Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)
+* ♻️ Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)
 
 
 ## 🔍 Trasparenza e Codice Sorgente
