@@ -8,15 +8,58 @@ Se decidi di aggiungere anche il rilevamento sismico, ti bastano pochi euro di c
 
 3. **Alimentazione e cavi:** 4 cavetti jumper femmina-femmina e un alimentatore micro-USB / USB-C.
 
-4. ** LED STATO FACOLTATIVO
+4. *(Facoltativo)* **1x Modulo LED RGB indirizzabile WS2812B (NeoPixel)** (da 1 a 6 LED) per avere un riscontro visivo immediato dello stato del sensore.
 
-### Cablaggio (ESP8266 / NodeMCU ↔ MPU6050)
+### 1️⃣ Schema collegamenti Sensore Sismico (Obbligatorio)
 
-| Pin MPU6050 | Pin NodeMCU (ESP8266) | Funzione |
-| ----- | ----- | ----- |
-| **VCC** | `3V3` | Alimentazione 3.3V |
-| **GND** | `GND` | Massa |
-| **SDA** | `D1` (GPIO5) | Dati I2C |
-| **SCL** | `D2` (GPIO4) | Clock I2C |
+Collega il modulo **MPU6050** alla scheda **NodeMCU (ESP8266)** seguendo questa tabella:
 
-> 💡 **Consiglio di posizionamento:** Fissa il sensore in modo solidale a una parete portante, al pavimento o in un angolo basso della casa (lontano da lavatrici, porte che sbattono o termosifoni). **All'accensione, tieni il sensore completamente fermo per i primi 10 secondi** per permettere la calibrazione automatica degli assi.
+| Pin MPU6050 | Pin NodeMCU (ESP8266) | Pin ESP32 (se usi ESP32) | Funzione |
+| :--- | :--- | :--- | :--- |
+| **VCC** | `3V3` (3.3V) | `3V3` (3.3V) | Alimentazione |
+| **GND** | `GND` | `GND` | Massa (Terra) |
+| **SDA** | `D2` (GPIO4) | `GPIO21` | Dati I2C |
+| **SCL** | `D1` (GPIO5) | `GPIO22` | Clock I2C |
+
+```text
+   [ NodeMCU ESP8266 ]               [ Sensore MPU6050 ]
+  +-------------------+             +-------------------+
+  |               3V3 |------------>| VCC               |
+  |               GND |------------>| GND               |
+  |        D2 (GPIO4) |------------>| SDA               |
+  |        D1 (GPIO5) |------------>| SCL               |
+  +-------------------+             +-------------------+
+```
+
+### 2️⃣ Schema collegamenti LED di Stato WS2812B / NeoPixel (Facoltativo)
+
+Il firmware supporta nativamente un LED RGB indirizzabile **WS2812B (NeoPixel)** (singolo o striscia/anello fino a 6 LED) collegato sul pin `D4` (`GPIO2`) per mostrarti a colpo d'occhio cosa sta facendo il sismometro senza dover aprire l'app. Se non lo colleghi, il sismometro funzionerà comunque regolarmente!
+
+| Pin LED WS2812B | Pin NodeMCU (ESP8266) | Funzione |
+| :--- | :--- | :--- |
+| **VCC / 5V / +** | `VIN` (5V da USB) o `3V3` | Alimentazione LED |
+| **GND / -** | `GND` | Massa (Terra) |
+| **DIN (Data In)** | `D4` (GPIO2) | Segnale dati digitale |
+
+```text
+   [ NodeMCU ESP8266 ]               [ LED WS2812B (Opzionale) ]
+  +-------------------+             +---------------------------+
+  |        VIN (o 3V3)|------------>| VCC / 5V                  |
+  |               GND |------------>| GND                       |
+  |        D4 (GPIO2) |------------>| DIN (Data In)             |
+  +-------------------+             +---------------------------+
+```
+
+#### 🎨 Significato dei colori del LED:
+* 🟣 **Viola lampeggiante:** Calibrazione iniziale in corso (primi 10 secondi dall'accensione: **non toccare il sensore!**).
+* 🔵 **Blu lampeggiante:** Sensore non connesso al Wi-Fi o in attesa di configurazione (modalità Setup AP `DomSense-Setup`).
+* 🟡 **Giallo fisso:** Connesso al Wi-Fi ma in attesa di connessione a Home Assistant / Server.
+* 🟢 **Verde fisso (luce soffusa):** Tutto OK! Sensore operativo, calibrato e connesso correttamente.
+* 🔴 **Rosso lampeggiante veloce:** **ALLARME!** Scossa o anomalia vibratoria rilevata in corso!
+
+---
+
+### 📌 Consigli fondamentali per il posizionamento
+Per far lavorare bene l'algoritmo sismico **STA/LTA** ed evitare falsi allarmi:
+1. **Fissa bene il sensore:** incollalo (con biadesivo forte o colla a caldo) o avvitalo dentro una scatoletta poggiata su una **superficie solida, rigida e in piano**, meglio se vicino a un muro portante o al pavimento, lontano da porte che sbattono, lavatrici o luoghi di passaggio.
+2. **Calibrazione all'avvio (10 secondi):** ogni volta che dai corrente al sensore, **non toccarlo per i primi 10 secondi** (se hai montato il LED, vedrai una luce **viola lampeggiante**). In questa fase il dispositivo calcola lo zero sugli assi X, Y e Z per compensare l'inclinazione.
