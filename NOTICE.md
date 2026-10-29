@@ -6,7 +6,7 @@ Il progetto usa componenti di terze parti, ciascuno con la propria licenza. Ques
 
 ## Firmware ESP (file `.bin`)
 
-I `.bin` distribuiti sono compilati con **ESPHome 2026.10.0** a partire dagli YAML presenti in questo repository (`firmware/`, `firmware-seismo/`, `esphome/`). Chiunque può ricompilarli con la stessa versione di ESPHome: tutte le librerie sotto vengono scaricate automaticamente dai loro repository pubblici.
+I `.bin` distribuiti sono compilati con **ESPHome 2026.10.0** a partire dagli YAML presenti in questo repository. Chiunque può ricompilarli con la stessa versione di ESPHome: tutte le librerie sotto vengono scaricate automaticamente dai loro repository pubblici.
 
 | Componente | Licenza | Sorgenti |
 |---|---|---|
@@ -19,17 +19,6 @@ I `.bin` distribuiti sono compilati con **ESPHome 2026.10.0** a partire dagli YA
 | libsodium | ISC | https://github.com/jedisct1/libsodium |
 
 **Componenti LGPL:** i loro sorgenti sono disponibili ai link sopra. Per sostituirli o modificarli basta ricompilare il firmware con ESPHome partendo dallo YAML corrispondente in questo repository.
-
-## Server / add-on
-
-| Componente | Licenza |
-|---|---|
-| FastAPI | MIT |
-| Uvicorn | BSD-3-Clause |
-| Pydantic | MIT |
-| Leaflet (caricato da CDN nella mappa) | BSD-2-Clause |
-| Tile OpenStreetMap | © OpenStreetMap contributors, ODbL |
-| Immagini satellitari Esri World Imagery | Termini d'uso Esri |
 
 ## Origine del progetto
 
