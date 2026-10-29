@@ -21,6 +21,8 @@ Prima di iniziare, richiedi la tua **Chiave API (`api_key`)** personale accettan
 
 ### Puoi unirti a DomSense scegliendo una delle seguenti configurazioni:
 
+* 🛠️ Come costruire il Sismometro (Per le Opzioni B e C)
+
 * 🌤️ Opzione A: Solo Meteo & Sensori con Home Assistant (Zero Hardware da costruire)
 
 * 🌋 Opzione B: Sismometro + Home Assistant (Consigliata per utenti HA)
@@ -29,7 +31,6 @@ Prima di iniziare, richiedi la tua **Chiave API (`api_key`)** personale accettan
 
 * 📡 Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)
 
-* 🛠️ Come costruire il Sismometro (Per le Opzioni B C e D)
 
 ## 🔍 Trasparenza e Codice Sorgente
 
