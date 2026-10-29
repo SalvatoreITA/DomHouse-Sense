@@ -2,7 +2,7 @@
 
 Ideale se usi **Home Assistant** e vuoi sia costruire il sismometro, sia condividere/ricevere i dati meteo della community.
 
-1. Costruisci il sensore seguendo lo [schema qui sotto](#️-come-costruire-il-sismometro-per-le-opzioni-b-c-e-d) e flasha sul microcontrollore il file `.bin` precompilato della versione **Home Assistant** (usando ad esempio il browser con [ESPHome Web](https://web.esphome.io/)).
+1. Costruisci il sensore seguendo lo [schema](#️-come-costruire-il-sismometro-per-le-opzioni-b-c-e-d) e flasha sul microcontrollore il file `.bin` precompilato della versione **Home Assistant** (usando ad esempio il browser con [ESPHome Web](https://web.esphome.io/)).
 
 2. Collegati in Wifi all'AP generato dal sismometro **DomHouseSense-Setup**
 
