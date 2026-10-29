@@ -1,6 +1,6 @@
 # Componenti di terze parti
 
-Il codice di **DomHouse Sense** (server, integrazione Home Assistant, add-on, file YAML dei firmware) è rilasciato sotto licenza **MIT** (vedi `LICENSE`).
+Il codice di **DomHouse Sense** (server, integrazione Home Assistant, file YAML dei firmware) è rilasciato sotto licenza **MIT** (vedi `LICENSE`).
 
 Il progetto usa componenti di terze parti, ciascuno con la propria licenza. Questo file li elenca per trasparenza e per rispettare gli obblighi di quelle licenze.
 
