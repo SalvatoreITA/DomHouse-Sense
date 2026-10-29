@@ -2,7 +2,7 @@
 
 Ideale se non usi Home Assistant e vuoi semplicemente un sismometro autonomo che invia i dati direttamente alla mappa della rete.
 
-1. Costruisci il sensore seguendo lo [schema qui sotto](#️-come-costruire-il-sismometro-per-le-opzioni-b-c-e-d) e flasha sul microcontrollore il file `.bin` precompilato della versione **Standalone** (usando ad esempio il browser con [ESPHome Web](https://web.esphome.io/)).
+1. Costruisci il sensore seguendo lo [schema](#️-come-costruire-il-sismometro-per-le-opzioni-b-c-e-d) e flasha sul microcontrollore il file `.bin` precompilato della versione **Standalone** (usando ad esempio il browser con [ESPHome Web](https://web.esphome.io/)).
 
 2. Collegati in Wifi all'AP generato dal sismometro **DomHouseSense-Setup**
 
