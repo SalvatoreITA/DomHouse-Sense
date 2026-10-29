@@ -19,18 +19,17 @@ Prima di iniziare, richiedi la tua **Chiave API (`api_key`)** personale accettan
 
 > 📍 **Regola d'oro per le coordinate (`lat` / `lon`):** Per la tua tutela e per non inviare dati personali sensibili, **NON inserire mai le coordinate esatte di casa tua**. Apri una mappa e scegli le coordinate di una piazza pubblica, una chiesa, una scuola o un incrocio a 200-500 metri da te. La precisione per il meteo di quartiere e per il calcolo di correlazione tra sensori sarà identica, ma il tuo indirizzo reale resterà completamente privato!
 
-Puoi unirti a DomSense scegliendo una delle seguenti configurazioni:
+### Puoi unirti a DomSense scegliendo una delle seguenti configurazioni:
 
-### 🌤️ Opzione A: Solo Meteo & Sensori con Home Assistant (Zero Hardware da costruire)
+* 🌤️ Opzione A: Solo Meteo & Sensori con Home Assistant (Zero Hardware da costruire)
 
-### 🌋 Opzione B: Sismometro + Home Assistant (Consigliata per utenti HA)
+* 🌋 Opzione B: Sismometro + Home Assistant (Consigliata per utenti HA)
 
-### 📡 Opzione C: Sismometro Standalone (Senza Home Assistant)
+* 📡 Opzione C: Sismometro Standalone (Senza Home Assistant)
 
-### 📡 Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)
+* 📡 Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)
 
-### 🛠️ Come costruire il Sismometro (Per le Opzioni B e C)
-
+* 🛠️ Come costruire il Sismometro (Per le Opzioni B C e D)
 
 ## 🔍 Trasparenza e Codice Sorgente
 
