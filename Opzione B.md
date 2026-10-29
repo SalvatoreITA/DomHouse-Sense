@@ -10,4 +10,4 @@ Ideale se usi **Home Assistant** e vuoi sia costruire il sismometro, sia condivi
 
 4. Collegalo al Wi-Fi: verrà rilevato automaticamente dalla tua istanza Home Assistant.
 
-5. Tramite l'add-on **DomSense** su Home Assistant, inserisci la tua **Chiave API** e invia alla rete sia gli eventi del sismometro sia i tuoi sensori meteo.
+5. Tramite l'add-on **DomHouse Sense** su Home Assistant, inserisci la tua **Chiave API** e invia alla rete sia gli eventi del sismometro sia i tuoi sensori meteo.
