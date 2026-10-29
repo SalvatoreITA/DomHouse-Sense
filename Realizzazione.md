@@ -52,7 +52,7 @@ Il firmware supporta nativamente un LED RGB indirizzabile **WS2812B (NeoPixel)**
 
 #### 🎨 Significato dei colori del LED:
 * 🟣 **Viola lampeggiante:** Calibrazione iniziale in corso (primi 10 secondi dall'accensione: **non toccare il sensore!**).
-* 🔵 **Blu lampeggiante:** Sensore non connesso al Wi-Fi o in attesa di configurazione (modalità Setup AP `DomSense-Setup`).
+* 🔵 **Blu lampeggiante:** Sensore non connesso al Wi-Fi o in attesa di configurazione (modalità Setup AP `DomHouse Sense-Setup`).
 * 🟡 **Giallo fisso:** Connesso al Wi-Fi ma in attesa di connessione a Home Assistant / Server.
 * 🟢 **Verde fisso (luce soffusa):** Tutto OK! Sensore operativo, calibrato e connesso correttamente.
 * 🔴 **Rosso lampeggiante veloce:** **ALLARME!** Scossa o anomalia vibratoria rilevata in corso!
