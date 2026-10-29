@@ -33,7 +33,7 @@ Collega il modulo **MPU6050** alla scheda **NodeMCU (ESP8266)** seguendo questa 
 
 ### 2️⃣ Schema collegamenti LED di Stato WS2812B / NeoPixel (Facoltativo)
 
-Il firmware supporta nativamente un LED RGB indirizzabile **WS2812B (NeoPixel)** (singolo o striscia/anello fino a 6 LED) collegato sul pin `D4` (`GPIO2`) per mostrarti a colpo d'occhio cosa sta facendo il sismometro senza dover aprire l'app. Se non lo colleghi, il sismometro funzionerà comunque regolarmente!
+Il firmware supporta nativamente un LED RGB indirizzabile **WS2812B (NeoPixel)** (singolo o striscia/anello fino a 10 LED) collegato sul pin `D4` (`GPIO2`) per mostrarti a colpo d'occhio cosa sta facendo il sismometro senza dover aprire l'app. Se non lo colleghi, il sismometro funzionerà comunque regolarmente!
 
 | Pin LED WS2812B | Pin NodeMCU (ESP8266) | Funzione |
 | :--- | :--- | :--- |
