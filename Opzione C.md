@@ -2,7 +2,7 @@
 
 Ideale se non usi Home Assistant e vuoi semplicemente un sismometro autonomo che invia i dati direttamente alla mappa della rete.
 
-1. Scarica il Firmware: ["DomHouse-Sense-HA.bin"](https://github.com/SalvatoreITA/DomHouse-Sense/releases/)
+1. Scarica il Firmware: ["DomHouse-Sense-Standalone.bin"](https://github.com/SalvatoreITA/DomHouse-Sense/releases/)
 
 2. Costruisci il sensore seguendo lo ["Schema Realizzazione"](https://github.com/SalvatoreITA/DomHouse-Sense/blob/main/Realizzazione.md) e flasha sul microcontrollore il file `.bin` precompilato della versione **Standalone** (usando ad esempio il browser con [ESPHome Web](https://web.esphome.io/)).
 
