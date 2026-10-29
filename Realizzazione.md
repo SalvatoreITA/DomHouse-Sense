@@ -8,7 +8,7 @@ Se decidi di aggiungere anche il rilevamento sismico, ti bastano pochi euro di c
 
 3. **Alimentazione e cavi:** 4 cavetti jumper femmina-femmina e un alimentatore micro-USB / USB-C.
 
-4. *(Facoltativo)* **1x Modulo LED RGB indirizzabile WS2812B (NeoPixel)** (da 1 a 6 LED) per avere un riscontro visivo immediato dello stato del sensore.
+4. *(Facoltativo)* **1x Modulo LED RGB indirizzabile WS2812B (NeoPixel)** (da 1 a 10 LED) per avere un riscontro visivo immediato dello stato del sensore.
 
 ### 1️⃣ Schema collegamenti Sensore Sismico (Obbligatorio)
 
