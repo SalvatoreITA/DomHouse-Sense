@@ -6,7 +6,7 @@
 
 1. **Monitoraggio Sismico Amatoriale:** Costruendo un piccolo ed economico sismometro domestico (ispirato a progetti come *SeismoCloud*) per rilevare le vibrazioni in tempo reale a scopo didattico e sperimentale.
 
-2. **Rete Meteo Condivisa:** Condividendo i sensori di temperatura o della tua stazione meteo già presenti sul tuo **Home Assistant** (anche senza avere il sismometro!) e **sfruttando i dati condivisi dai tuoi vicini** direttamente dentro il tuo Home Assistant.
+2. **Rete Meteo Condivisa:** Condividendo i sensori di temperatura o della tua stazione meteo già presenti sul tuo **Home Assistant** (anche senza avere il sismometro!) o **sfruttando i dati condivisi dai tuoi vicini** direttamente dentro il tuo Home Assistant.
 
 ## ✨ Perché partecipare a DomHouse Sense?
 
