@@ -33,9 +33,9 @@ Puoi unirti a DomHouse Sense scegliendo una delle seguenti configurazioni (clicc
 
 ## 🔍 Trasparenza e Codice Sorgente
 
-Per i sismometri **non devi compilare alcun codice**: forniamo direttamente i due file `.bin` pronti all'uso (versione *Standalone* e versione *Home Assistant*).
+**Non devi compilare alcun codice**: forniamo direttamente i due file `.bin` pronti all'uso.
 
-Per garantire la massima trasparenza sul funzionamento dell'algoritmo **STA/LTA** e sulla gestione dei dati, in questo repository trovi comunque pubblicati i **codici sorgente YAML** completi di entrambi i firmware.
+Per garantire la massima trasparenza sul funzionamento dell'algoritmo **STA/LTA** e sulla gestione dei dati, in questo repository trovi comunque pubblicati i **codici sorgente YAML** completi di tutti i firmware disponibili.
 
 > **Nota di sicurezza:** Nei codici sorgente pubblici l'indirizzo del server centrale è stato omesso. Per collegarti effettivamente alla rete, utilizza i file `.bin` ufficiali precompilati o l'add-on Home Assistant insieme alla tua chiave API.
 
