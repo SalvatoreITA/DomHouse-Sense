@@ -29,7 +29,7 @@ Puoi unirti a DomHouse Sense scegliendo una delle seguenti configurazioni (clicc
 - [🌤️ Opzione A: Solo Meteo & Sensori con Home Assistant (Zero Hardware da costruire)](#️-opzione-a-solo-meteo--sensori-con-home-assistant-zero-hardware-da-costruire)
 - [🌋 Opzione B: Sismometro + Home Assistant (Consigliata per utenti HA)](#-opzione-b-sismometro--home-assistant-consigliata-per-utenti-ha)
 - [📡 Opzione C: Sismometro Standalone (Senza Home Assistant)](#-opzione-c-sismometro-standalone-senza-home-assistant)
-- [📡 Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)](#-opzione-d-sismometro-standalone-migrazione-da-progetto-seismocloud)
+- [♻️ Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)](#-opzione-d-sismometro-standalone-migrazione-da-progetto-seismocloud)
 
 ## 🔍 Trasparenza e Codice Sorgente
 
