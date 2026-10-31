@@ -20,7 +20,7 @@
 
 ## 🚀 Come partecipare alla rete (Scegli la tua modalità)
 
-Prima di iniziare, richiedi la tua [**Chiave API (`api_key`)**](https://domhouse.it/sense/) personale accettando i termini d'uso del progetto.
+Prima di iniziare, richiedi la tua [**Chiave API (`api_key`)**](https://domhouse.it/domhouse-sense/) personale accettando i termini d'uso del progetto.
 
 > 📍 **Regola d'oro per le coordinate (`lat` / `lon`):** Per la tua tutela e per non inviare dati personali sensibili, **NON inserire mai le coordinate esatte di casa tua**. Apri una mappa e scegli le coordinate di una piazza pubblica, una chiesa, una scuola o un incrocio a 200-500 metri da te. La precisione per il meteo di quartiere e per il calcolo di correlazione tra sensori sarà identica, ma il tuo indirizzo reale resterà completamente privato!
 
