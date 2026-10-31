@@ -1,5 +1,5 @@
 substitutions:
-  server_url:  ""   # IL TUO SERVER: resta qui e nel .bin
+  server_url:  ""
 
 esphome:
   name: "domhouse-sense-seismo"
