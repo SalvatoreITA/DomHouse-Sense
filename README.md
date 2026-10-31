@@ -40,8 +40,6 @@ Puoi unirti a DomHouse Sense scegliendo una delle seguenti configurazioni (clicc
 Per garantire la massima trasparenza sul funzionamento dell'algoritmo **STA/LTA** e sulla gestione dei dati, in questo repository trovi comunque pubblicati i **codici sorgente YAML** completi di tutti i firmware disponibili.
 
 > **Nota:** nei sorgenti YAML l'indirizzo del server è lasciato vuoto (`server_url: ""`). Per collegarti alla rete usa i file `.bin` ufficiali precompilati oppure l'integrazione Home Assistant con l'indirizzo e la chiave API che ti vengono forniti. Senza una chiave valida il server non accetta dati.
->
-> Se compili tu i sorgenti: copia `Sorgenti/secrets.yaml.example` in `secrets.yaml` e imposta la tua `ota_password`.
 
 ## ⚠️ Disclaimer Importante ed Esclusione di Responsabilità
 
