@@ -4,7 +4,7 @@ Ideale se possiedi già un sismometro costruito per il progetto **[Seismo Cloud]
 
 1. **Verifica il cablaggio:** L'hardware utilizzato da SeismoCloud (ESP8266 + MPU6050 su bus I2C `SDA=D1` / `SCL=D2`) è già compatibile; non serve dissaldare o spostare i cavi (ignora eventuali LED o buzzer aggiuntivi se presenti).
 
-2. Scarica il Firmware: ["DomHouse-Sense-Migration.bin"](https://github.com/SalvatoreITA/DomHouse-Sense/releases/)
+2. Scarica il Firmware: ["DomHouse-Sense-Migration.bin"](https://github.com/SalvatoreITA/DomHouse-Sense/tree/main/Firmware%20Pre%20Compilati)
 
 2. **Flash del nuovo firmware:** Collega il dispositivo via USB al PC e flasha il file `.bin` precompilato di DomHouse Sense versione **Migration** tramite [ESPHome Web](https://web.esphome.io/).
 
