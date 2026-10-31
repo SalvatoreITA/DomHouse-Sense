@@ -31,15 +31,17 @@ Puoi unirti a DomHouse Sense scegliendo una delle seguenti configurazioni (clicc
 - [🌋 Opzione B: Sismometro + Home Assistant (Consigliata per utenti HA)](https://github.com/SalvatoreITA/DomHouse-Sense/blob/main/Opzione%20B.md)
 - [📡 Opzione C: Sismometro Standalone (Senza Home Assistant)](https://github.com/SalvatoreITA/DomHouse-Sense/blob/main/Opzione%20C.md)
 - [♻️ Opzione D: Sismometro Standalone (Migrazione da progetto SeismoCloud)](https://github.com/SalvatoreITA/DomHouse-Sense/blob/main/Opzione%20D.md)
-- [🧊 Case per Stampa 3D (PRESTO DISPONIBILE)](https://)
+- 🧊 Case per Stampa 3D *(presto disponibile)*
 
 ## 🔍 Trasparenza e Codice Sorgente
 
-**Non devi compilare alcun codice**: forniamo direttamente i due file `.bin` pronti all'uso.
+**Non devi compilare alcun codice**: forniamo direttamente i tre file `.bin` pronti all'uso (cartella `Firmware Pre Compilati`).
 
 Per garantire la massima trasparenza sul funzionamento dell'algoritmo **STA/LTA** e sulla gestione dei dati, in questo repository trovi comunque pubblicati i **codici sorgente YAML** completi di tutti i firmware disponibili.
 
-> **Nota di sicurezza:** Nei codici sorgente pubblici l'indirizzo del server centrale è stato omesso. Per collegarti effettivamente alla rete, utilizza i file `.bin` ufficiali precompilati o l'add-on Home Assistant insieme alla tua chiave API.
+> **Nota:** nei sorgenti YAML l'indirizzo del server è lasciato vuoto (`server_url: ""`). Per collegarti alla rete usa i file `.bin` ufficiali precompilati oppure l'integrazione Home Assistant con l'indirizzo e la chiave API che ti vengono forniti. Senza una chiave valida il server non accetta dati.
+>
+> Se compili tu i sorgenti: copia `Sorgenti/secrets.yaml.example` in `secrets.yaml` e imposta la tua `ota_password`.
 
 ## ⚠️ Disclaimer Importante ed Esclusione di Responsabilità
 
