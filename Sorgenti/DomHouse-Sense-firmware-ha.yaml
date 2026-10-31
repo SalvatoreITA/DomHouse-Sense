@@ -1,0 +1,254 @@
+esphome:
+  name: domhouse-sense
+  name_add_mac_suffix: true
+  friendly_name: "DomHouse Sense HA"
+
+esp8266:
+  board: nodemcuv2
+
+#######################################
+
+logger:
+  level: INFO
+  baud_rate: 115200
+
+api:
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: "xxx"
+  password: "xxx"
+  ap:
+    ssid: "DomHouseSense-Setup"
+
+captive_portal:
+
+#######################################
+
+i2c:
+  sda: D1
+  scl: D2
+  frequency: 400kHz
+
+#######################################
+
+globals:
+  - { id: phase,       type: int,      restore_value: false, initial_value: '0' }
+  - { id: phase_start, type: uint32_t, restore_value: false, initial_value: '0' }
+  - { id: cal_sum_x,   type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cal_sum_y,   type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cal_sum_z,   type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cal_n,       type: uint32_t, restore_value: false, initial_value: '0' }
+  - { id: off_x,       type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: off_y,       type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: off_z,       type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: sta,         type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: lta,         type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cur_pga,     type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cur_ratio,   type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: run_start,   type: uint32_t, restore_value: false, initial_value: '0' }
+  - { id: quake_state, type: bool,     restore_value: false, initial_value: 'false' }
+  - { id: last_quake,  type: uint32_t, restore_value: false, initial_value: '0' }
+  - { id: peak_pga,    type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: ha_ok,       type: bool,     restore_value: false, initial_value: 'false' }
+
+#######################################
+
+sensor:
+  - platform: mpu6050
+    address: 0x68
+    accel_x: { id: ax, internal: true }
+    accel_y: { id: ay, internal: true }
+    accel_z:
+      id: az
+      internal: true
+      on_value:
+        then:
+          - lambda: |-
+              const double A_STA = 0.05;       // EMA ~0.5 s @40Hz
+              const double A_LTA = 0.000833;   // EMA ~30 s  @40Hz
+              const double TRIG  = 4.0;
+              const double DETRIG = 2.0;
+              const double PGA_MIN = 0.003;    // g
+              const uint32_t WARMUP_MS = 30000;
+
+              uint32_t now = millis();
+              if (id(phase) == 0 && id(phase_start) == 0) id(phase_start) = now;
+
+              double rx = id(ax).state, ry = id(ay).state, rz = id(az).state;
+              if (std::isnan(rx) || std::isnan(ry) || std::isnan(rz)) return;
+
+              if (id(phase) == 0) {
+                id(cal_sum_x) += rx; id(cal_sum_y) += ry; id(cal_sum_z) += rz; id(cal_n)++;
+                if (now - id(phase_start) >= 10000) {
+                  if (id(cal_n) > 0) {
+                    id(off_x) = id(cal_sum_x)/id(cal_n);
+                    id(off_y) = id(cal_sum_y)/id(cal_n);
+                    id(off_z) = id(cal_sum_z)/id(cal_n);
+                  }
+                  id(phase) = 2; id(run_start) = now;
+                  id(quake_bs).publish_state(false);   // fine calibrazione -> "Terremoto rilevato" = Off
+                }
+                return;
+              }
+
+              double dx = rx - id(off_x), dy = ry - id(off_y), dz = rz - id(off_z);
+              double v = sqrt(dx*dx + dy*dy + dz*dz);
+              double pga = v / 9.80665;         // m/s^2 -> g
+              if (pga > 4.0) return;
+              id(cur_pga) = pga;
+
+              id(sta) += (pga - id(sta)) * A_STA;
+              id(lta) += (pga - id(lta)) * A_LTA;
+              double ratio = (id(lta) > 1e-5) ? (id(sta) / id(lta)) : 0.0;
+              id(cur_ratio) = ratio;
+
+              bool warmed = (now - id(run_start)) > WARMUP_MS;
+
+              if (!id(quake_state)) {
+                if (warmed && ratio > TRIG && pga > PGA_MIN) {
+                  id(quake_state) = true;
+                  id(last_quake) = now;
+                  id(peak_pga) = pga;
+                  id(quake_bs).publish_state(true);
+                  ESP_LOGW("domhouse-sense", "QUAKE onset: PGA %.4f g, STA/LTA %.2f", pga, ratio);
+                }
+              } else {
+                if (pga > id(peak_pga)) id(peak_pga) = pga;
+                bool long_enough = (now - id(last_quake)) > 1000;
+                if ((ratio < DETRIG && long_enough) || (now - id(last_quake)) > 60000) {
+                  id(quake_state) = false;
+                  id(quake_bs).publish_state(false);
+                  ESP_LOGW("domhouse-sense", "QUAKE end: peak PGA %.4f g", id(peak_pga));
+                }
+              }
+    temperature: { id: mpu_raw_temp, internal: true }
+    update_interval: 25ms
+
+#######################################
+
+  # --- entità VISIBILI in Home Assistant ---
+  - platform: template
+    id: pga_s
+    name: "PGA"
+    unit_of_measurement: "g"
+    accuracy_decimals: 4
+    state_class: measurement
+    update_interval: never
+
+  - platform: template
+    id: ratio_s
+    name: "STA-LTA"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+    update_interval: never
+
+  - platform: template
+    id: mpu_temp_s
+    name: "Temperatura sensore"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    device_class: temperature
+    update_interval: never
+
+  - platform: wifi_signal
+    name: "Segnale Wifi dB"
+    id: wifi_signal_db
+    update_interval: 120s
+    entity_category: "diagnostic"
+
+  - platform: copy
+    source_id: wifi_signal_db
+    name: "Segnale Wifi"
+    icon: mdi:wifi
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+    device_class: ""
+
+#######################################
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      icon: mdi:ip-outline
+      name: "Indirizzo IP"
+    ssid:
+      icon: mdi:wan
+      name: "Connesso alla rete"
+
+  - platform: uptime
+    name: "Online da"
+    icon: "mdi:clock-outline"
+    update_interval: 60s
+    format:
+      separator: " "
+      days: "g"
+      hours: "h"
+      minutes: "m"
+
+#######################################
+
+binary_sensor:
+  - platform: template
+    id: quake_bs
+    name: "Terremoto rilevato"
+    device_class: vibration
+
+#######################################
+
+switch:
+  - platform: restart
+    name: "Riavvio ESP"
+    id: "riavvio_esp"
+
+#######################################
+
+light:
+  - platform: neopixelbus
+    id: status_led
+    variant: WS2812
+    pin: GPIO2
+    num_leds: 10
+    internal: true
+    default_transition_length: 0s
+    restore_mode: ALWAYS_OFF
+
+#######################################
+
+interval:
+  - interval: 100ms
+    then:
+      - lambda: |-
+          uint32_t now = millis();
+          bool wifi_ok = WiFi.isConnected();
+          float r=0, g=0, b=0, bri=0.2; bool show=true;
+          if (id(quake_state))    { r=1;   g=0;   b=0;   bri=0.6;  show=(now/150)%2; }  // rosso = terremoto
+          else if (id(phase)==0)  { r=0.6; g=0;   b=1.0; bri=0.6;  show=(now/800)%2; }  // viola = calibrazione
+          else if (!wifi_ok)      { r=0;   g=0.0; b=1.0; bri=0.6;  show=(now/500)%2; }  // blu  = no WiFi / setup
+          else if (id(ha_ok))     { r=0;   g=1.0; b=0.0; bri=0.15; }                    // verde= connesso a HA
+          else                    { r=1.0; g=0.6; b=0;   bri=0.6;  }                    // giallo= online, HA non connessa
+          if (show) {
+            auto call = id(status_led).turn_on();
+            call.set_rgb(r,g,b); call.set_brightness(bri); call.set_transition_length(0); call.perform();
+          } else {
+            auto call = id(status_led).turn_off();
+            call.set_transition_length(0); call.perform();
+          }
+  - interval: 1s
+    then:
+      - if:
+          condition: api.connected
+          then:
+            - lambda: 'id(ha_ok) = true;'
+          else:
+            - lambda: 'id(ha_ok) = false;'
+      - lambda: |-
+          if (id(phase) < 2) return;
+          id(pga_s).publish_state(id(cur_pga));
+          id(ratio_s).publish_state(id(cur_ratio));
+          if (!std::isnan(id(mpu_raw_temp).state))
+            id(mpu_temp_s).publish_state(id(mpu_raw_temp).state);

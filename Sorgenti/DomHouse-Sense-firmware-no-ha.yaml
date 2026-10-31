@@ -1,0 +1,382 @@
+substitutions:
+  server_url:  ""   # IL TUO SERVER: resta qui e nel .bin
+
+esphome:
+  name: "domhouse-sense"
+  name_add_mac_suffix: true
+  friendly_name: "DomHouse Sense Standard"
+
+esp8266:
+  board: nodemcuv2
+  restore_from_flash: true   # salva chiave/lat/lon/nome in flash (sopravvivono al riavvio)
+
+#######################################
+
+preferences:
+  flash_write_interval: 5s   # scrive subito dopo che imposti i campi
+
+logger:
+  level: INFO
+  baud_rate: 115200
+
+api:
+
+ota:
+  - platform: esphome
+
+web_server:
+  port: 80
+  version: 2
+
+wifi:
+  ap:
+    ssid: "DomHouseSense-Setup"
+  on_connect:
+    - delay: 5s
+    - lambda: 'if (!id(cfg_key).state.empty()) id(send_heartbeat).execute();'
+
+captive_portal:
+
+#######################################
+
+time:
+  - platform: sntp
+    id: sntp_time
+
+http_request:
+  useragent: "domhouse-sense-sensor"
+  timeout: 10s
+  verify_ssl: false
+
+i2c:
+  sda: D1
+  scl: D2
+  frequency: 400kHz
+
+#######################################
+
+text:
+  - platform: template
+    name: "DomHouse Sense - Chiave API"
+    id: cfg_key
+    mode: password
+    optimistic: true
+    restore_value: true
+    initial_value: ""
+    max_length: 64
+  - platform: template
+    name: "DomHouse Sense - Nome stazione"
+    id: cfg_name
+    mode: text
+    optimistic: true
+    restore_value: true
+    initial_value: ""
+    max_length: 40
+
+#######################################
+
+number:
+  - platform: template
+    name: "DomHouse Sense - Latitudine"
+    id: cfg_lat
+    optimistic: true
+    restore_value: true
+    initial_value: 0
+    min_value: -90
+    max_value: 90
+    step: 0.00001
+    mode: box
+  - platform: template
+    name: "DomHouse Sense - Longitudine"
+    id: cfg_lon
+    optimistic: true
+    restore_value: true
+    initial_value: 0
+    min_value: -180
+    max_value: 180
+    step: 0.00001
+    mode: box
+
+#######################################
+
+globals:
+  # calibrazione (offset per asse = rimuove la gravita')
+  - { id: phase,       type: int,      restore_value: false, initial_value: '0' }
+  - { id: phase_start, type: uint32_t, restore_value: false, initial_value: '0' }
+  - { id: cal_sum_x,   type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cal_sum_y,   type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cal_sum_z,   type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cal_n,       type: uint32_t, restore_value: false, initial_value: '0' }
+  - { id: off_x,       type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: off_y,       type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: off_z,       type: double,   restore_value: false, initial_value: '0.0' }
+  # STA/LTA ricorsivo + stato evento
+  - { id: sta,         type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: lta,         type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cur_pga,     type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: cur_ratio,   type: double,   restore_value: false, initial_value: '0.0' }
+  - { id: run_start,   type: uint32_t, restore_value: false, initial_value: '0' }
+  - { id: quake_state, type: bool,     restore_value: false, initial_value: 'false' }
+  - { id: last_quake,  type: uint32_t, restore_value: false, initial_value: '0' }
+  - { id: peak_pga,    type: double,   restore_value: false, initial_value: '0.0' }
+  # valori inviati al server
+  - { id: q_mag, type: double, restore_value: false, initial_value: '0.0' }
+  - { id: q_ax,  type: double, restore_value: false, initial_value: '0.0' }
+  - { id: q_ay,  type: double, restore_value: false, initial_value: '0.0' }
+  - { id: q_az,  type: double, restore_value: false, initial_value: '0.0' }
+  # stato connessione server (per il LED)
+  - { id: server_ok,  type: bool,     restore_value: false, initial_value: 'false' }
+  - { id: last_ok_ms, type: uint32_t, restore_value: false, initial_value: '0' }
+
+#######################################
+
+sensor:
+  - platform: mpu6050
+    address: 0x68
+    accel_x: { id: ax, internal: true }
+    accel_y: { id: ay, internal: true }
+    accel_z:
+      id: az
+      internal: true
+      on_value:
+        then:
+          - lambda: |-
+              // ====== parametri STA/LTA (da seismoM5: trigger 4, detrigger 2) ======
+              const double A_STA = 0.05;       // EMA ~0.5 s @40Hz
+              const double A_LTA = 0.000833;   // EMA ~30 s  @40Hz
+              const double TRIG  = 4.0;
+              const double DETRIG = 2.0;
+              const double PGA_MIN = 0.003;    // soglia minima in g (anti-rumore)
+              const uint32_t WARMUP_MS = 30000;
+
+              uint32_t now = millis();
+              if (id(phase) == 0 && id(phase_start) == 0) id(phase_start) = now;
+
+              double rx = id(ax).state, ry = id(ay).state, rz = id(az).state;
+              if (std::isnan(rx) || std::isnan(ry) || std::isnan(rz)) return;
+
+              // ---- FASE 0: calibrazione 10 s (offset per asse) ----
+              if (id(phase) == 0) {
+                id(cal_sum_x) += rx; id(cal_sum_y) += ry; id(cal_sum_z) += rz; id(cal_n)++;
+                if (now - id(phase_start) >= 10000) {
+                  if (id(cal_n) > 0) {
+                    id(off_x) = id(cal_sum_x)/id(cal_n);
+                    id(off_y) = id(cal_sum_y)/id(cal_n);
+                    id(off_z) = id(cal_sum_z)/id(cal_n);
+                  }
+                  id(phase) = 2; id(run_start) = now;
+                  id(quake_bs).publish_state(false);   // fine calibrazione -> "Terremoto rilevato" = Off
+                }
+                return;
+              }
+
+              // ---- PGA in g (il componente mpu6050 restituisce m/s^2) ----
+              double dx = rx - id(off_x), dy = ry - id(off_y), dz = rz - id(off_z);
+              double v = sqrt(dx*dx + dy*dy + dz*dz);
+              double pga = v / 9.80665;
+              if (pga > 4.0) return;            // scarta letture palesemente sballate
+              id(cur_pga) = pga;
+
+              // ---- STA/LTA ricorsivo ----
+              id(sta) += (pga - id(sta)) * A_STA;
+              id(lta) += (pga - id(lta)) * A_LTA;
+              double ratio = (id(lta) > 1e-5) ? (id(sta) / id(lta)) : 0.0;
+              id(cur_ratio) = ratio;
+
+              bool warmed = (now - id(run_start)) > WARMUP_MS;
+
+              if (!id(quake_state)) {
+                if (warmed && ratio > TRIG && pga > PGA_MIN) {
+                  id(quake_state) = true;
+                  id(last_quake) = now;
+                  id(peak_pga) = pga;
+                  id(q_mag) = pga; id(q_ax) = dx; id(q_ay) = dy; id(q_az) = dz;
+                  id(quake_bs).publish_state(true);
+                  if (!id(cfg_key).state.empty()) id(send_quake).execute();
+                  ESP_LOGW("domhouse-sense", "QUAKE onset: PGA %.4f g, STA/LTA %.2f", pga, ratio);
+                }
+              } else {
+                if (pga > id(peak_pga)) id(peak_pga) = pga;
+                bool long_enough = (now - id(last_quake)) > 1000;
+                if ((ratio < DETRIG && long_enough) || (now - id(last_quake)) > 60000) {
+                  id(quake_state) = false;
+                  id(quake_bs).publish_state(false);
+                  ESP_LOGW("domhouse-sense", "QUAKE end: peak PGA %.4f g", id(peak_pga));
+                }
+              }
+    temperature: { id: mpu_raw_temp, internal: true }
+    update_interval: 25ms
+
+#######################################
+
+  - platform: template
+    id: pga_s
+    name: "PGA"
+    unit_of_measurement: "g"
+    accuracy_decimals: 4
+    state_class: measurement
+    update_interval: never
+
+  - platform: template
+    id: ratio_s
+    name: "STA-LTA"
+    accuracy_decimals: 2
+    entity_category: diagnostic
+    update_interval: never
+
+  - platform: template
+    id: mpu_temp_s
+    name: "Temperatura sensore"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    device_class: temperature
+    update_interval: never
+
+  - platform: wifi_signal
+    id: rssi_s
+    name: "WiFi RSSI"
+    update_interval: 60s
+    entity_category: diagnostic
+
+  - platform: copy
+    source_id: rssi_s
+    name: "Segnale Wifi"
+    icon: mdi:wifi
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);
+    unit_of_measurement: "%"
+    entity_category: "diagnostic"
+    device_class: ""
+
+#######################################
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      icon: mdi:ip-outline
+      name: "Indirizzo IP"
+    ssid:
+      icon: mdi:wan
+      name: "Connesso alla rete"
+
+  - platform: uptime
+    name: "Online da"
+    icon: "mdi:clock-outline"
+    update_interval: 60s
+    format:
+      separator: " "
+      days: "g"
+      hours: "h"
+      minutes: "m"
+
+#######################################
+
+binary_sensor:
+  - platform: template
+    id: quake_bs
+    name: "Terremoto rilevato"
+    device_class: vibration
+
+#######################################
+
+switch:
+  - platform: restart
+    name: "Riavvio ESP"
+    id: "riavvio_esp"
+
+#######################################
+
+light:
+  - platform: neopixelbus
+    id: status_led
+    variant: WS2812
+    pin: GPIO2
+    num_leds: 10
+    internal: true
+    default_transition_length: 0s
+    restore_mode: ALWAYS_OFF
+
+#######################################
+
+interval:
+  - interval: 100ms
+    then:
+      - lambda: |-
+          uint32_t now = millis();
+          if (id(server_ok) && (now - id(last_ok_ms) > 120000)) id(server_ok) = false;
+          bool wifi_ok = WiFi.isConnected();
+          float r=0, g=0, b=0, bri=0.2; bool show=true;
+          if (id(quake_state))     { r=1;   g=0;   b=0;   bri=0.6;  show=(now/150)%2; }  // rosso = terremoto
+          else if (id(phase)==0)   { r=0.6; g=0;   b=1.0; bri=0.6;  show=(now/800)%2; }  // viola = calibrazione
+          else if (!wifi_ok)       { r=0;   g=0.0; b=1.0; bri=0.6;  show=(now/500)%2; }  // blu  = no WiFi / setup
+          else if (id(server_ok))  { r=0;   g=1.0; b=0.0; bri=0.15; }                    // verde= server connesso
+          else                     { r=1.0; g=0.6; b=0;   bri=0.6;  }                    // giallo= online, no server
+          if (show) {
+            auto call = id(status_led).turn_on();
+            call.set_rgb(r,g,b); call.set_brightness(bri); call.set_transition_length(0); call.perform();
+          } else {
+            auto call = id(status_led).turn_off();
+            call.set_transition_length(0); call.perform();
+          }
+  - interval: 1s
+    then:
+      - lambda: |-
+          if (id(phase) < 2) return;
+          id(pga_s).publish_state(id(cur_pga));
+          id(ratio_s).publish_state(id(cur_ratio));
+          if (!std::isnan(id(mpu_raw_temp).state))
+            id(mpu_temp_s).publish_state(id(mpu_raw_temp).state);
+  - interval: 60s
+    then:
+      - lambda: 'if (!id(cfg_key).state.empty()) id(send_heartbeat).execute();'
+
+#######################################
+
+script:
+  - id: send_heartbeat
+    then:
+      - http_request.post:
+          url: ${server_url}/api/heartbeat
+          on_response:
+            then:
+              - lambda: |-
+                  if (response->status_code >= 200 && response->status_code < 400) {
+                    id(server_ok) = true; id(last_ok_ms) = millis();
+                  }
+          request_headers:
+            Content-Type: application/json
+          body: !lambda |-
+            static char buf[320];
+            std::string key = id(cfg_key).state;
+            std::string nm  = id(cfg_name).state;
+            float rssi = id(rssi_s).has_state() ? id(rssi_s).state : 0.0f;
+            float temp = (!std::isnan(id(mpu_raw_temp).state)) ? id(mpu_raw_temp).state : 0.0f;
+            snprintf(buf, sizeof(buf),
+              "{\"device_id\":\"%s\",\"key\":\"%s\",\"name\":\"%s\",\"lat\":%.6f,\"lon\":%.6f,"
+              "\"fw_version\":\"domhouse-sense\",\"rssi\":%.0f,\"temp\":%.1f}",
+              get_mac_address().c_str(), key.c_str(), nm.c_str(),
+              id(cfg_lat).state, id(cfg_lon).state, rssi, temp);
+            return std::string(buf);
+
+  - id: send_quake
+    then:
+      - http_request.post:
+          url: ${server_url}/api/event
+          on_response:
+            then:
+              - lambda: |-
+                  if (response->status_code >= 200 && response->status_code < 400) {
+                    id(server_ok) = true; id(last_ok_ms) = millis();
+                  }
+          request_headers:
+            Content-Type: application/json
+          body: !lambda |-
+            static char buf[256];
+            std::string key = id(cfg_key).state;
+            time_t ts = id(sntp_time).now().is_valid() ? id(sntp_time).now().timestamp : 0;
+            // magnitude = PGA in g (all'onset)
+            snprintf(buf, sizeof(buf),
+              "{\"device_id\":\"%s\",\"key\":\"%s\",\"magnitude\":%.5f,\"ax\":%.5f,\"ay\":%.5f,\"az\":%.5f,\"ts\":%ld}",
+              get_mac_address().c_str(), key.c_str(),
+              id(q_mag), id(q_ax), id(q_ay), id(q_az), (long)ts);
+            return std::string(buf);
